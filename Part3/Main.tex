@@ -1,0 +1,144 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Ruby: Syntax, Scope, Data Types, and Operators}
+\author{Noah Ransom}
+\date{October 11, 2017}
+
+\lstset{
+  language=Ruby,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+%end of preliminaries and title page
+
+\section{Syntax}
+\subsection{Basic Structure}
+Ruby allows the programmer to draw from the ASCII character set to write their programs. Users may use whatever combination of uppercase and lowercase characters they please, (with a few minor exceptions), but should be aware that Ruby is case-sensitive. Most constructs, with the notable exception of identifiers, can be separated by an arbitrary amount of comments and whitespace characters(space, vertical tab, tab, form feed, backspace, carriage return). Except when used in a string literal, whitespace is generally ignored. Statements are separated by semicolons and newlines, so particular caution must be used when employing a newline as whitespace\cite{huihoo}.
+
+Identifiers can consist of any combination of alphanumeric characters(uppercase and/or lowercase) and underscores, with no restriction on length. By using certain naming conventions, the programmer can specify the scope and type of a variable. While Ruby does have reserved words, the only restriction on their use is that they may only be used to name functions: \verb|BEGIN = 0| is not allowed, but \verb|def BEGIN...end| is \cite{huihoo}\cite{syntut}.
+
+Like most languages, Ruby allows the programmer to create line comments and block comments. Line comments, preceded by \#, may be used at any position within a line; if the \# follows an expression, the expression will be evaluated, and everything between the \# and the end of the line will be treated as a comment. Block comments work similarly to line comments, with a few minor changes. Firstly, the block comment is contained within a \verb|=begin| and a \verb|=end| statement. All text between the statements, including whitespace, will be ignored (this includes any text sharing the line with the \verb|=begin| statement or the \verb|=end| statement)\cite{huihoo}\cite{syntut}.
+
+\subsection{Strings}
+
+String literals and string expressions can be enclosed in either single or double quotation marks. The use of single over double quotations has little effect on the evaluation of the string, except that double-quoted strings can make use of the \verb|\| character to escape a character, while single-quoted expressions cannot (with the exception of \verb|\\| and \verb|\'|. If the string literal will contain a large number of \verb|'| or \verb |"| characters, it may be more convenient to use the alternative syntax: \verb|%q/[literal]/| (for single quotes), or either one of \verb|%Q/[literal]/| or \verb|%/[literal]/| (both of which function identically to double quotes). When using the alternative syntax forms, one may elect to use any non-alphanumeric character, including a newline, instead of \verb|/|, with the restriction that the delimiters must match. If one elects to use parentheses or braces as delimiters, the opening delimiter must be the opening character, and the closing delimiter must be the matching closing character\cite{huihoo}.
+
+Ruby's functionality as a scripting language shines through in its ability to treat string literals as command statements. Evaluating a string enclosed by either two grave marks and double quotes (\verb|`"[string]"`|), or \verb|%x{[string]}|\footnote{When using this syntax, the braces may be replaced by any matching pair of delimiters.} will cause the string to be sent to the console as a command. This will return the result of the command's execution. The command will be executed every time the string is evaluated\cite{huihoo}.
+
+\subsection{Miscellaneous}
+\begin{enumerate}
+    \item{A string delimited by forward slashes will be treated as a regular expression}
+    \item{An expression within a string can be evaluated before the string itself by preceding it with a \verb|#| and delimiting it with braces. This will display returns of function calls and the values of variables without first storing them in their own string.}
+\end{enumerate}
+
+
+\section{Scope}
+In Ruby, there are four different possible scopes for a variable, each of which corresponds to its own naming convention. Global variables, which are visible to the entirety of the script, are preceded by a \verb|$|; class variables, which are available to their class and its subclasses, are preceded by \verb|@@|; instance variables, which are available only to the specific object, are preceded by \verb|@|; local variables, preceded by a lowercase letter or an underscore, are more complex. The scope of a local variable is determined solely by the scope in which it is assigned to a value\cite{darko}.
+
+At first glance, the distinction between a class variable and an instance variable seems small. Both are, after all, visible to the class in which they exist, and both can be used by any of the methods within the class. The distinction between them is in how they may be changed. Consider, for example, a class Animal that contains the class variable \verb|@@num_legs|, which is set to four. If one were to create a class for humans, one would want to set \verb|@@num_legs| to two, as humans only have two legs. Because the Animal class uses a class variable for the number of legs, though, changing the value of \verb|@@num_legs| for the Human class will also change the value for the Animal class\cite{darko}.
+
+Ruby controls the current scope by using scope gates. The code defining a module, method, or class, is considered its own scope, and thus has access only to variables created in that scope, or otherwise made available to it. Though a method of a class will still have access to the class variables, instance variables, and global variables, it will lose access to any local variables created in the class. Similarly, the class itself will not have access to the local variables created in its methods. To circumvent the scope gates, the programmer may use method calls in place of the standard declarations. Doing so will preserve access to local variables that would otherwise be blocked by scope gates. By default, a block does not serve as a scope gate. A local variable that is in scope where the block is written will be accessible to the block, but local variables created inside of the block will not be available outside of the block\cite{darko}. 
+
+
+\section{Data Types}
+Since Ruby was designed to be a fully object-oriented language, it has no primitive data types whatsoever. Everything in Ruby is an object, including literals. Since Ruby has no true primitives, I will instead discuss its basic data types: strings, numbers, booleans, and arrays.
+
+Ruby's Numeric class serves as the basis for all of the number-based classes in Ruby. Its subclasses are Integer, Float, Rational, and Complex. Collectively, these describe all possible numbers. Integer, in turn, has the subclasses FixNum(for integers ranging from $-2^{62}$ to $2^{62} - 1$) and BigNum (for integers greater than $2^{62}-1$ or smaller than $-2^{62}$). Float is used to describe all floating point numbers, that is, non-integers with no imaginary component, and Complex is used to store complex numbers. The Rational class is used to store rational numbers as a pair of integers (a numerator and a denominator). This allows the programmer to avoid rounding errors that would usually occur due to the use of floating point numbers, as the number is only evaluated when it is cast to a different type. Float, Rational, and Complex are all unlimited in the size of the numbers they may represent\cite{rubydocs}.
+
+Strings in Ruby behave largely as expected, and can be created either from literals, or as a series of bytes. A string may have any size in theory, though in practice, the maximum length of a string is dictated by the amount of memory available to the program.
+
+Though Ruby does have classes specifically for true and false, respectively TrueClass and FalseClass, only one instance exists of each: the global value true and the global value false. Instead of having a class for booleans, Ruby evaluates expressions, and then returns the instance of the correct boolean class based on the value of the statement. Since everything in Ruby can be interpreted as a boolean, there is no need for a specific boolean type\cite{forumbool}.
+
+In Ruby, an array is an "ordered, integer-indexed [collection] of any object"\cite{docsarray}. Array indices start at 0, and negative indices indicate indexing relative to the end of the array(an index of -1 indicates the final element in the array). Somewhat atypically, Ruby's arrays dynamically increase in size as necessary\cite{docsarray}.
+
+
+
+\section{Operators}
+Because Ruby lacks primitive data types, its operators do not act directly on the variables or expressions upon which they are used. Instead, an operator works as a function call in which the operator is a method for one of the objects, and the other object is treated as an argument to that method. For example, \verb|a + b| is treated as \verb|a.+(b)|. This distinction, though significant at a technical level, has little effect on the programmer on a routine basis, other than that it allows for easy overloading and modification of the basic operators. It must also be noted that Ruby requires that all operands for an operator be of a compatible type\cite{opstut}.
+
+Ruby's number classes all support the standard arithmetic operators that one would expect from most modern languages: addition, subtraction, division, multiplication, modulus, and exponentiation. Ruby uses infix notation to represent operations, and the return value of the operation is based on the highest-precision class involved in the operation. If an integer is subtracted from a float, for example, the result will always be of type float, no matter the value of the result. Arithmetic operators work from left to right: \verb|a / b| returns the quotient of a divided by b, \verb|a % b| returns the remainder of a divided by b, and so on\cite{opstut}.
+
+In addition to the typical operators for testing equality, greater than, less than, less than or equal to, etc, Ruby includes a few comparison operators not typically found in other languages, such as the combined comparison operator (\verb|<=>|). This operator compares two comparable values and returns a value based on their equality relationship. The expression \verb|a <=> b| will return 1 if \verb|a > b|, 0 if \verb|a == b|, and -1 if \verb|a < b|. Ruby's \verb|==| operator returns true when two objects share the same value, which is sufficient in most cases, but due to the fact that everything in the language is an object, it is necessary to include operators that compare the classes of each operand. To this end, one may use \verb|.eql?| or \verb|.equal?|. The former will return true if both operands hold the same value and are of the same type, and the latter will return true if and only if both operands have the same object id. As a clarifying example, \verb|3 == 3.0| will return true, because 3 and 3.0 have the same value, but \verb|3.eql?(3.0)| will return false, because 3 is a FixNum, and 3.0 is a Float. More esoterically, Ruby features a \verb|===| operator to test equality in case statements. The operator returns a boolean value based on the answer to the question "If \verb|a| described a set, would \verb|b| be a member of that set?"\cite{mittag}\cite{opstut}
+
+Ruby's assignment operators are the same as those found in most languages: a single \verb|=| for direct assignment, \verb|+=| for addition and assignment, and so on. All of the arithmetic operators can be used in conjunction with an equals sign to perform assignment based on the result of the operation. Parallel assignment can be used to assign multiple values at once(\verb|foo, bar, bas = 10, 34, 14|), or to easily swap the values of two or more variables(\verb|foo, bar = bar, foo|)\cite{opstut}.
+
+As in other languages, Ruby features bitwise(bitwise and, or, XOR, one's compliment, left shift, and right shift) and logical operations. Ruby's logical operators are and, or, and not, which can be used as words (\verb|a and b|), or as their traditional operational symbols(\verb|a && b|) with no effect to the truth value returned by the statement. As with the logical and bitwise operations, Ruby's ternary uses the same syntax as most other languages\cite{opstut}.
+
+\subsection{Operator Precedence and Associativity}
+The following table describes Ruby's operators, their associativity, and their precedence. Note that higher-precedence operations are listed higher up in the list, and lower precedence operators listed lower\cite{opstut}\cite{opsassociativity}.
+\begin{center}
+    \begin{tabular}{|c | c | l|}
+        \hline
+        Operator & Associativity & Description \\ \hline
+        \verb|! ~| & Right & boolean not, bitwise compliment \\ \hline
+        \verb|**| & Right & exponentiation \\ \hline
+        \verb|* / %| & Left & multiplication, division, and modulus \\ \hline
+        \verb|- +| & Left & subtraction, addition/concatentation \\ \hline
+        \verb|>> <<| & Left & bitwise right shift and left shift(or append) \\ \hline
+        \verb|&| & Left & bitwise and \\ \hline
+        \verb=^ |= & Left & bitwise XOR, bitwise or \\ \hline
+        \verb|> >= <= <| & Left & comparison \\ \hline
+        \verb|== === != <=> =~ !~| & Non-associative & equality and pattern matching \\ \hline
+        \verb|&&| & Left & boolean and \\ \hline
+        \verb=||= & Left & boolean or \\ \hline
+        \verb|... ..| & Non-associative & range creation (exclusive and inclusive) \\ \hline
+        \verb|? :| & Right & ternary if-then-else \\ \hline
+        \verb|= += %= **=| etc & Right & assignment \\ \hline
+        \verb|defined?| & Non-associative & check if the symbol is defined \\ \hline
+        \verb|not| & Right & logical negation \\ \hline
+        \verb|and or| & Left & logical composition \\ \hline
+        
+        
+        
+        \hline
+        
+        
+    \end{tabular}
+\end{center}
+
+
+
+
+\pagebreak
+\nocite{*}
+\bibliographystyle{plain-annote}
+\bibliography{part3}{}
+
+\end{document}

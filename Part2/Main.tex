@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Ruby: A brief Overview and History}
+\author{Noah Ransom}
+\date{October 4, 2017}
+
+\lstset{
+  language=Ruby,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+\section{Overview}
+
+\subsection{Early Inspiration}
+Yukihiro Matsumoto was inspired to design Ruby due to his exposure to a 1993 class on scripting languages. His interest in object oriented languages led him to explore both Perl(which lacked the features he was interested) and Python(whose hybrid of object oriented and procedural programming was too lax)\cite{rubyinterview}. Matsumoto then decided to develop his own language that was "more powerful than Perl and more object oriented than Python"\cite{rubyinterview}.
+
+\subsection{Design Philosophy}
+Ruby is built upon the philosophy of least surprise: all features of Ruby should align as closely as possible with the expectations and assumptions of the programmer\cite{rubyinterview}. This is not to say that Ruby is a simplistic language; Matsumoto designed Ruby to be capable of both simple and complex tasks. Matsumoto states that Ruby should allow "[the programmer to] enjoy programming and concentrate on the fun and creative part"\cite{rubyinterview}. 
+
+\subsection{Influences}
+Matsumoto drew inspiration from some of his favorite languages: Perl, Smalltalk, Lisp, Eiffel, and Ada, and has stated on several occasions that his goal for Ruby is that it be natural, rather than simple, much like human beings\cite{generalRb}. Perhaps the best summarization comes from Matsumoto himself: "I wanted a scripting language that was more powerful than Perl, and more object-oriented than Python"\cite{rubyinterview}. 
+%Comments can be added to your project by clicking on the comment icon in the toolbar above. 
+% * <john.hammersley@gmail.com> 2014-09-03T09:54:16.211Z:
+%
+% Here's an example comment!
+%
+%To reply to a comment, simply click the reply button in the lower right corner of the comment, and you can close them when you're done.
+
+\subsection{Purpose}
+Ruby is a general purpose language and sees widespread use(notably in the Metasploit Project, which uses Ruby code to conduct penetration testing)\cite{metasploit}\cite{generalRb}.  Matsumoto's intent in creating it was not to achieve a specific purpose, but rather to create a general purpose language that was better than its contemporaries\cite{rubyinterview}. As a general purpose language, it sees wide use in scripting and web development, particularly through the framework Ruby on Rails.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Features}
+
+\subsection{Variables}
+%\subsubsection{Typing}
+When declaring a variable in Ruby, it is not necessary to specify a type(it's actually impossible). Instead, the compiler checks whether a method can be performed on a variable when requested, and generates an error if necessary. This functionality is largely due to the fact that everything in Ruby is an object. If some object lacks the method it is asked to employ, it simply generates an error.
+%\subsubsection{Variable Scope}
+Ruby has class, global, instance, and local variables as well as constants\cite{rbvars}. Class variables are shared between all instances of a class. To indicate which type of variable is desired, the variable's name is preceded by a \verb|$| for a global variable, \verb|@| for an instance variable, \verb|@@| for a class variable, a lowercase letter or \verb|_| for a local variable, and an uppercase letter for a constant. Though Ruby eschews specific keywords for each type of variable, it still allows easy program comprehension and enforces a naming convention. Since the preceding character must be used in conjunction with the variable at all times, it is always easy to determine the scope of a variable at a glance.
+
+
+\subsection{Objects}
+In Ruby, everything is an object, including segments of code\cite{generalRb}. This means that even primitive types, such as strings and numbers, can be used as objects, rather than just as primitives. The following code provides an excellent example:
+\begin{lstlisting}
+	4.times {print "Hello, World!"}
+\end{lstlisting}
+Ruby's unique object system means that the string "Hello, World!" will be printed four times. Besides being a useful time-saving tool, this provides users with additional control over the program.
+
+Anything in Ruby that is not an object is a message; to call a method on an object, its class is sent a message asking the given function be performed. Because of this system, a programmer is more easily able to control for type mismatching issues. Rather than allowing one's program to crash due to a type incompatibility, one can write additional code to handle objects being asked to perform illegal functions.
+
+\subsection{Customization}
+One of Ruby's most useful design features is that the core pieces of the language can be modified or removed at the programmer's discretion. It is possible to modify the built in arithmetic operators, or to add or remove methods from built in classes from within the code of a given program. If, for example, your program involved doubling a large quantity of numbers, you could add a \verb|double| method to Ruby's built-in \verb|Numeric| class like so:
+\begin{lstlisting}
+    class Numeric
+        def double(x)
+            self.*(2)
+        end
+    end
+\end{lstlisting}
+By adding to \verb|Numeric|, rather than creating a separate method, you have given yourself the ability to use your new method on any object in Ruby that inherits \verb|Numeric|.
+
+\subsection{Blocks}
+Blocks are one of Ruby's most useful and interesting features, as they allow Ruby to behave similarly to functional languages. A programmer can create a block of code by placing it between a \verb|do| and \verb|end| statement or between curly braces, and then placing it adjacent to a method call. This allows the programmer to use functions as parameters for other functions, and can often save a great deal of space and time.
+Once the block has been passed to a method, the method can execute that block of code with the \verb|yield| keyword:
+\begin {lstlisting}
+	def say_hello
+		puts 'Hi,there!'
+    	yield
+    	end
+	say_hello {puts 'I'm Ruby!"}
+\end{lstlisting}
+The output for this code will be as follows:
+\begin{verbatim}
+    Hi, there!
+    I'm Ruby!
+\end{verbatim}
+The \verb|yield| keyword does not need to be used on its own: the programmer has the option of passing arguments to the block provided, if desired. This allows for much more versatile programming and greater flexibility. By changing only the block of code passed to a method, it is possible to change how the method works without making a totally separate method.
+
+Blocks also have the interesting property that they can be used in a recursive loop. If the user provides a block of code, A, to a method, B, method B can call block A with arguments not directly coded into block A, or provided along with it during the function call. Since the arguments provided to block A by method B can themselves be blocks of code (or even block A itself), it is easy to create a program that is both incredibly flexible and extremely confusing.
+
+As a consequence of this feature, it is possible to use Ruby for some of the same applications generally reserved for functional languages. Though it was not designed specifically to behave in this manner, a programmer could, if they desired, write their code as a series of blocks and methods that are all passed between each other, instead of passing values and variables. As mentioned previously, Ruby's extreme versatility is its greatest asset to the user.
+
+\subsection{Inheritance}
+Unlike many more modern languages, Ruby only supports single inheritance\cite{inheritance}. While this seems to be a serious limitation, Ruby provides a convenient way to circumvent it. Consider, for example, three classes: A, B, and C. Suppose that class B has inherited from class A, but needs the method \verb|foo|, which has already been defined in class C. To access this method without reproducing code, the following can be added to class B:
+\begin{lstlisting}
+    def foo()
+        @C.foo
+    end
+\end{lstlisting}
+Composition is, therefore, a powerful tool for the programmer. In instances in which one only wants access to some methods of another class, it is not necessary to inherit the entire class just to access them.
+
+\subsection{Modules and Mixins}
+Ruby supports the creation of Modules, which are similar to classes\cite{generalRb}. Since Ruby allows single inheritance only, the programmer is encouraged to collect methods used by a large number of classes into modules than can then be added to each class using \verb|include|. A module can also be used independently from a mixin to supply a class or file with useful data or methods without duplicating them. Consider, for example, a program that solves for the sides and angles of right triangles. When writing the program, the programmer could define $\pi$ and create methods to find trigonometric ratios such as sine and cosine inside the same file as the rest of the program, but this would not be the best approach. A wise programmer would define the constants and methods he needs in a trigonometry module stored in a separate file that can be accessed both by his current program and by any future programs\cite{moduletutorial}.
+\subsection{Miscellaneous}
+\begin{itemize}
+    \item {Ruby lacks the unary operators \verb|++| and \verb|--|. Programmers must instead use \verb|+=| or \verb|-=|\cite{rubymisc}.}
+    \item {Multiple variables can be assigned in the same statement, such as in the example below:
+    \begin{lstlisting} 
+    a,b = b,a
+    \end{lstlisting}}
+    \item{Strings can be modified in place without reassignment: 
+    \begin{lstlisting}
+    a = "hello"
+    a[1] = "a"
+    print a     #prints hallo
+    \end{lstlisting}
+    While this feature is not unique to Ruby, it is often extremely useful to the programmer to easily modify a string or array without needing to call a class method or reassign it to the new value.}
+    \item{Ruby supports the use of regular expressions and ranges. Ranges, though not unique to Ruby, can save a great deal of time. An array containing the number from 1 to 5 can be created without ranges by individually listing every number that is to be put into the array(\verb|foo = Array[1, 2, 3, 4, 5]|), or, much more neatly, by using ranges(\verb|foo = (1..5).to_a|)\cite{rangetut}.}
+    
+\end{itemize}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{History}
+
+\section{History}
+Ruby's development began in early 1993, when Yukihiro Matsumoto decided to create a scripting language that improved on the functionality of Perl and Python\cite{rubyinterview}. 
+Around this time, Matsumoto and a friend decided to name the language; they selected Ruby as an homage to Perl (both are precious stones with short names)\cite{rubyinterview}. Later, Matsumoto discovered that the pearl is the birthstone of June, and the ruby the birthstone for July. Though the coincidence is accidental, Matsumoto feels that it is appropriate, considering that Ruby was designed to be a successor to Perl.
+
+Matsumoto first released Ruby to Japanese newsgroups in December of 1995(though he released an alpha version of the language a year earlier), and newsgroups were started for the new language soon after\cite{earlyhistmatz}\cite{rubyinterview}. Adoption by English speakers was fairly slow until the 2002 release of \begin{it}Programming Ruby\end{it}, a book by Dave Thomas and Andrew Hunt. This tutorial book brought widespread adoption by English speakers and lead to greater participation in Ruby's newsgroups. At the peak of the newsgroup's popularity in 2006, an average of 200 messages were posted to the newsgroup daily\cite{generalRb}. This popularity was likely due in part to the extreme popularity of the web framework Ruby on Rails, which is built in Ruby. In recent years, the Ruby newsgroup has declined in activity, though the language itself remains extremely popular - it ranked number 10 on the TIOBE index in September 2017\cite{tiobe2017}.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\bibliographystyle{plain-annote}
+\bibliography{part2}{}
+
+\end{document}
