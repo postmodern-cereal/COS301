@@ -32,6 +32,11 @@ $LEFT_PAREN  = 20
 $RIGHT_PAREN = 21
 $BOOL_LIT 	 = 30	#true/false
 
+
+def error()
+	#puts "Unable to parse input."
+end
+
 #returns 0 if it's a letter, nil if not
 def letter?(character)
 	character =~ /[[:alpha:]]/
@@ -158,7 +163,7 @@ def bool_expr()
 	and_term
 	while $next_token == $OR_OP
 		lex()
-		term()
+		and_term()
 	end
 	puts "exit <bool_expr>"
 end
@@ -166,8 +171,10 @@ end
 def and_term()
 	#parses and_term ::= bool_factor {& bool_factor}
 	puts "enter <and_term>"
+	lex
 	bool_factor
-	while $next_token == $OR_OP
+
+	while $next_token == $AND_OP
 		lex
 		bool_factor
 	end
@@ -196,6 +203,26 @@ def bool_factor()
 	puts "exit <bool_factor>"
 end
 
+#TODO: format relations so that != and >= etc are recognized
+
+def relation_expr()
+	puts "enter <relation_expr>"
+	lex
+	if $next_token == $IDENT
+		lex
+	else
+		error
+	end
+
+	while $next_token == $REL_OP
+		if $next_token == $IDENT
+			lex
+		else
+			error
+		end
+	end
+	puts "exit <relation_expr>"
+end
 
 
 
@@ -204,7 +231,8 @@ end
 #open input file in read mode
 $INPUT_FILE = File.open("input.txt", "r")
 get_char()
-until $next_token == $EOF do
-	lex()
+while $next_token != $EOF
+	lex
+	bool_expr
 end
 $INPUT_FILE.close
