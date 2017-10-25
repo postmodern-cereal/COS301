@@ -34,7 +34,7 @@ $BOOL_LIT 	 = 30	#true/false
 
 
 def error()
-	#puts "Unable to parse input."
+	puts "Error on " + $lexeme.join + ". Parse will continue, but input is not in the language."
 end
 
 #returns 0 if it's a letter, nil if not
@@ -114,6 +114,9 @@ def lookup(character)
 			#the string is not legal
 			abort("Error. Invalid relation operator. Analysis terminated.")
 		end
+	when "!"
+		add_char
+		$next_token = $NEG_OP
 	else
 		add_char
 		$next_token = $EOF
@@ -171,9 +174,8 @@ end
 def and_term()
 	#parses and_term ::= bool_factor {& bool_factor}
 	puts "enter <and_term>"
-	lex
-	bool_factor
 
+	bool_factor
 	while $next_token == $AND_OP
 		lex
 		bool_factor
@@ -197,17 +199,14 @@ def bool_factor()
 			error
 		end
 	else
-		lex
 		relation_expr
 	end
 	puts "exit <bool_factor>"
 end
 
-#TODO: format relations so that != and >= etc are recognized
 
 def relation_expr()
 	puts "enter <relation_expr>"
-	lex
 	if $next_token == $IDENT
 		lex
 	else
@@ -215,6 +214,7 @@ def relation_expr()
 	end
 
 	while $next_token == $REL_OP
+		lex
 		if $next_token == $IDENT
 			lex
 		else
@@ -233,6 +233,8 @@ $INPUT_FILE = File.open("input.txt", "r")
 get_char()
 while $next_token != $EOF
 	lex
-	bool_expr
+	if $next_token != $EOF
+		bool_expr
+	end
 end
 $INPUT_FILE.close
