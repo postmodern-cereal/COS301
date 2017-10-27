@@ -1,6 +1,16 @@
-#you can use getc on a file to read one character at a time
-#
-#
+#By Noah Ransom
+
+#writes the output to the specified file, rather than the console. I use this to make writing the appendix easier
+#if the file does not exist when you run this program, it will be created for you.
+$stdout.reopen("output_2.txt", "w")
+
+
+#NOTE: The code for the lexical analysis is based on the code from the lexical analysis slides.
+#The parsing code is also loosely based on the code from the slides, with heavy modification to fit this specific application
+#I mostly borrowed the general flow of control from the slides, but I had to make major modifications to make it work.
+
+
+
 
 #declare the variables that you'll need later
 $char_class #character's class
@@ -38,6 +48,9 @@ def error()
 end
 
 #returns 0 if it's a letter, nil if not
+#the regular expressions for letter? space? and digit? were found online. I looked at a lot of different sources, and all said the same
+#see https://stackoverflow.com/questions/14551256/ruby-how-to-find-out-if-a-character-is-a-letter-or-a-digit in particular
+#i just used this code in my methods. I guessed that /[[:space:]]/ would work if the others did, and got lucky
 def letter?(character)
 	character =~ /[[:alpha:]]/
 end
@@ -229,7 +242,8 @@ end
 
 ######################Main function analogue##############################
 #open input file in read mode
-$INPUT_FILE = File.open("input.txt", "r")
+#by changing the name of the input file, I can change the input without having to rewrite it every time
+$INPUT_FILE = File.open("input_2.txt", "r")
 get_char()
 while $next_token != $EOF
 	lex
