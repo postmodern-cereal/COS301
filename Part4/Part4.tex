@@ -1,0 +1,94 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{appendix}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{fancyvrb}
+
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{fontsize=\footnotesize
+ %
+}
+
+\title{Ruby: Data types, Expressions, and Assignment}
+\author{Noah Ransom}
+\date{November 10, 2017}
+
+\lstset{
+  language=Ruby,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+%end of preliminaries and title page
+
+\section{Data Types}
+Technically, all data in Ruby comes in the form of objects. From integers to hashes, the language represents the information indirectly as an object, rather than directly as a piece of memory. As a consequence, Ruby does not have primitive data types, which eliminates any real distinction between primitive and non primitive types. For this reason, this section considers those types typically included in other languages, but not considered primitive types: strings, symbols, arrays, hashes, classes, and structs.
+
+Ruby's strings behave similarly to those in most languages. A string object "holds and manipulates an arbitrary sequence of bytes, typically representing characters" \cite{docs_string}. As with all types in Ruby, strings are objects, and so its is hardly surprising that Ruby's strings are mutable by default. As with all things in Ruby this behavior can be modified, and strings can be forced to be immutable by using the \verb|freeze| method.
+
+Like many languages, Ruby provides the programmer with a \verb|symbol| type. A symbol is one of the most simple types in Ruby, as it consists only of "a name and an internal ID"\cite{learning_symbols}. In a given program, every object, class, method, and operator will have a symbol associated with it automatically. To access the symbol for a name, one need only prefix the name with a colon (to access the symbol for variable \verb|foo|, one would type \verb|:foo|). Before proceeding, it is crucial to clarify that every name in a program has one and only one associated symbol. Ruby expert Fabio Akita provides an excellent explanation on his page about symbols: "if Fred [refers to] a constant in one context, a method in another, and a class in a third, the Symbol \verb|:Fred| will be the same object in all three contexts"\cite{learning_symbols}.
+
+Ruby's arrays and hashes function very similarly to those found in many other languages. Arrays are mutable and resizable, and can be made to hold objects of various types\cite{learning_arrays}. Like in Python, accessing an array with a negative index will return elements relative to their distance from the end of the array. Somewhat non traditionally, when a programmer attempts to access an index beyond the bounds of the array, Ruby returns \verb|nil| rather than throwing an exception. Relatedly, hashes function nearly identically to Python's libraries\cite{docs_hashes}.
+
+Since everything in Ruby is an object, it is not surprising that Ruby allows the programmer to create custom classes with methods, inheritance, accessors, and modules. What is surprising is that it also allows for the creation of Struct objects. Like those found in C, these hold sets of variables and values. Perhaps the best summation of the distinction between classes and structs comes from the Ruby documentation: "A Struct is a convenient way to bundle a number of attributes together, using accessor methods, without having to write an explicit class"\cite{docs_struct}.
+
+\section{Libraries Extending the Type System}
+Since everything in Ruby is an object, Ruby's type system is largely obscured from the user. To be certain, Ruby does have ways to ensure that "types" are used correctly, though this is done through duck typing. Before using a method on an object, Ruby ensures that the object will allow that method to be used on it safely. As a consequence, Ruby's typing is extremely flexible. To change how it works, all one need do is change how their classes are written.
+
+\section{Expression Evaluation: Semantics}
+When discussing Ruby's expression semantics, it is important to be cognizant of the fact that many of its operators are simply syntactic convenience, and are implemented as method calls\cite{opstut}. For the most part, this has little effect on the way expressions are evaluated. The operators are used with in-fix notation, and are evaluated from left to right according to a fairly standard order of operations.
+
+What makes expressions unique in Ruby is the flexibility of the underlying language. Because it is easy to override Ruby's default operators, the programmer has the freedom to customize how expressions are evaluated\cite{generalrb}. To clarify, this freedom mostly pertains to easy ability to change the results of, for example, the addition operator. The operators can be overloaded and modified on a class by class basis, but they will still be evaluated in the same order. Since basic operators can be defined and overridden for every class, one need not create a custom system for expression evaluation from the ground up.
+
+\section{Coercions and Type Conversions in Expression Evaluation}
+Since Ruby's types are highly obscured from the programmer, it often makes little sense to consider type conversion. On occasion, an object may have its data copied to a different object prior to or as a result of the evaluation of an expression, but in most cases, the programmer is encouraged to overload operators in order to avoid this necessity.
+
+All the same, there are certain situations in which a type conversion is inevitable. For example, when evaluating an expression involving members of the Numeric class, Ruby will return a member of the class best suited to the result. If the product of two Integers is larger than the maximum size for an integer, the result will be a member of the Bignum class\cite{docs_integer}. In similar vein, Ruby performs the standard type conversions between numeric types as necessary (the result of an Integer division will always be an Integer, but dividing an Integer by a Float will return a Float).
+
+\section{Assignment Semantics}
+Ruby performs assignments using type inferencing, which means that the type is inferred based on the value it is assigned. In addition to using type inferencing, Ruby is dynamically typed. This means that a non-constant variable can be reassigned to any value at any time. Writing \verb|foo = "hello"| will create a variable name \verb|foo| that refers to a String that contains \verb|hello|, and writing \verb|bar = 5.25| binds the name \verb|bar| to an instance of Float with a value of \verb|5.25|. Since Ruby is dynamically typed, though, it would be acceptable to write \verb|foo = 5| on the next line.
+
+For classes that cannot be directly assigned as literals, assignment syntax is slightly different. Consider a simple class \verb|Rectangle|, which has a constructor that accepts length and width as parameters. To create a Rectangle variable, one would write the following code: \verb|big_square = Rectangle.new(50, 50)|. Once the first object has been constructed, other variables can be made to point to the same object: \verb|copy_of_big_square = big_square|\cite{learning_classes}.
+
+\pagebreak
+\nocite{*}
+\bibliographystyle{plain-annote}
+\bibliography{part4}{}
+
+\end{document}
