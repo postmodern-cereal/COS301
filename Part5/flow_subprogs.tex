@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{appendix}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{fancyvrb}
+
+\title{Ruby: Control Constructs and Subprograms}
+\author{Noah Ransom}
+\date{November 27, 2017}
+
+\lstset{
+  language=Ruby,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+%end of preliminaries and title page
+\section{Control Constructs}
+\subsection{Conditionals}
+Ruby provides all of the traditional control statements familiar to modern programmers: if/else/else if statements, ternary operators, and case statements. The syntax associated with each of these should be familiar to those familiar with modern languages. For example, if statements are structured like so:
+\begin{lstlisting}
+    if <condition>
+        <code>
+    elsif <condition>
+        <code>
+    else
+        <code>
+    end
+\end{lstlisting}
+Alternately, this can be condensed to fit in one line by following the conditional with the \verb|then| keyword, and enclosing the code block in curly braces\cite{flow_control}. The case statement should be equally familiar: it begins with the keyword \verb|case|, and ends with the \verb|end| keyword. For greater code readability, it is good practice to include the variable after the \verb|case| keyword. The complete syntax is best illustrated though an example:
+\begin{lstlisting}
+    a = 5
+    
+    case a
+        when a % 2 == 0
+            puts "a is even"
+        when a % 2 == 1
+            puts "a is odd"
+        else                                #the else keyword serves the same function as the default keyword in C++
+            puts "a is neither even nor odd"
+    end
+    #this code will display "a is odd" when evaluated
+\end{lstlisting}
+In addition to these familiar conditional statements, Ruby provides an \verb|unless| statement. It works almost identically to a negated if statement: the accompanying code block is only executed if the conditional evaluates to false\cite{ctrl_struct}. Also like with if statements, it is possible to use an \verb|unless| statement in-line: \verb|<code> unless <conditional>| Unlike an if statement, the \verb|unless| statement does not allow for an else or an \verb|else if| statement\cite{ctrl_struct}. 
+\subsection{Loops}
+As with conditional statements, Ruby features a number of loop constructs that will be familiar to most programmers: while loops, for loops, and for each loops. The syntax for each of these constructs should also be familiar. A while statement, for example, is structured as follows:
+\begin{lstlisting}
+    while <condition> do
+        <code>
+    end
+\end{lstlisting}
+Note here that the \verb|do| keyword on the first line is optional, and may be used with any loop construct\cite{ctrl_struct}. 
+Like the \verb|unless| and \verb|if| constructs, \verb|while| may be used in-line by preceding the \verb|while| keyword with the code block, and proceeding it with the conditional. In some cases, it code readability may be improved by using the \verb|until| keyword. It functions almost identically to the \verb|while| keyword, except that it evaluates its code block until the conditional no longer evaluates to false\cite{ctrl_struct}.
+Just as with the \verb|while| construct, Ruby's \verb|for| syntax is nearly identical to the syntax of other modern languages such as Java or C++, except that it uses ranges to dictate the bounds of iteration. Similarly, Ruby provides a for each syntax that allows iteration over all of the elements in a collection\cite{flow_control}.
+These loop constructs can be used in conjunction with the \verb|break|,\verb|next|,\verb|return|, and \verb|redo| keywords. The first two keywords should be familiar to programmers who have worked with Java or C++. The \verb|break| keyword is used to exit a loop, the \verb|next| keyword terminates the current iteration and returns to the conditional, and the \verb|return| keyword returns the value specified. The \verb|redo| command is similar to the \verb|next| keyword, in that it stops evaluation of the code block when it is called, but unique in that it returns to the top of the code block and begins evaluation without checking the conditional\cite{flow_control}.
+
+\section{Subprograms}
+\pagebreak
+\nocite{*}
+\bibliographystyle{plain-annote}
+\bibliography{part5}{}
+
+\end{document}
