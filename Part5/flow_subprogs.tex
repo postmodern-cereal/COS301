@@ -89,6 +89,37 @@ Just as with the \verb|while| construct, Ruby's \verb|for| syntax is nearly iden
 These loop constructs can be used in conjunction with the \verb|break|,\verb|next|,\verb|return|, and \verb|redo| keywords. The first two keywords should be familiar to programmers who have worked with Java or C++. The \verb|break| keyword is used to exit a loop, the \verb|next| keyword terminates the current iteration and returns to the conditional, and the \verb|return| keyword returns the value specified. The \verb|redo| command is similar to the \verb|next| keyword, in that it stops evaluation of the code block when it is called, but unique in that it returns to the top of the code block and begins evaluation without checking the conditional\cite{flow_control}.
 
 \section{Subprograms}
+Ruby's subprograms, or methods, offer a great deal of functionality to the programmer. They are created by using the \verb|def| keyword, and completed using the \verb|end| keyword. Methods employ the scope gating behavior discussed earlier in the paper: local variables created outside the method are not available to the code in the method, and local variables created in the method are not visible to other code in the program\cite{calvin_labs}\cite{learn_co}. Interestingly, Ruby's naming system allows the possibility of name conflicts with method and variable names. It is perfectly legal to write the following code:
+\begin{lstlisting}
+    def foo()  
+        puts "Hello"
+    end
+    
+    p foo                   #Hello 
+    foo = "Goodbye"
+    p foo                   #Goodbye
+\end{lstlisting}
+In this case, the function \verb|foo| is still available to the programmer. To access the function, it is necessary to use parentheses to indicated that one is referring to the function, rather than the variable. In the example above, evaluating \verb|p foo()| will print \verb|Hello| to the console\cite{darko}.
+
+When a method is declared, the programmer may specify any number of parameters. These come in three forms: required arguments, default arguments, and optional arguments. These can be illustrated by using an example:
+\begin{lstlisting}
+    def add_some_numbers(a, b, c=3, *d)
+        sum = a + b + c
+        d.each do |num|
+            sum += num
+        end
+    end
+\end{lstlisting}
+Here, \verb|a| and \verb|b| are the required arguments. Whenever a call is made to \verb|add_some_numbers|, the programmer must include a minimum of two numbers. The parameter \verb|c| is a default parameter. If the programmer does not specify a third value, the method will use the defult value of 3. The final parameter, \verb|d| is an array that is used to contain the optional arguments. If no additional arguments are supplied in the call, it will remain empty\cite{skorkin}.
+When parameters are given to a method, Ruby satisfies the required arguments first, and the optional and default values second. Alan Skorkin provides an illustrative example of this process on his website \url{www.skorks.com}, which I shall paraphrase here. Suppose there is a method with a parameter list \verb|(a, b, *p, q)|. Values will be assigned to these parameters based on the number of arguments supplied. If the method is called with the argument list \verb|(25, 35, 45, 55)|, the parameters of the method will be assigned such that \verb|a = 25|, \verb|b = 35|, \verb|*p = [45]| and \verb|q = 55|\cite{skorkin}. If the programmer passed only the first three values, the optional array would be left empty, and the \verb|q| parameter would be assigned a value of 45. When a method contains both default arguments and optional arguments, Ruby will assign values first to required parameters, then to default values, and finally to the optional array. This concept is simple in theory, but in practice, it can become confusing\cite{skorkin}.
+As Ruby has no formal type system, a method call can contain arguments of any type, including blocks of code(the latter of which will be covered in greater depth in section \ref{blocks}).
+
+Perhaps unsurprisingly, Ruby does allow the programmer to create recursive programs. The caveat is that Ruby does not allow tail call optimization by default. For this reason, recursive programming is generally a risky proposition, as it can quickly deplete available memory for large applications. When it is essential to use recursive programming, the programmer may enable tail call optimization by enabling the relevant compiler option\cite{bekal}.
+
+\section{Blocks}\label{blocks}
+Ruby's blocks allow the programmer to pass code as an argument to a method. Strictly speaking, this is not the same as passing a method as an argument to another method, but in practice, it can allow the same functionality\cite{mixandgo}. As mentioned previously, a block is a self contained segment of code. They can accept parameters, or work independently.
+To summarize a very deep topic, blocks can be passed to methods in much the same way as other arguments: they can be required, optional, or defaulted. Controlling this behavior is largely dependent on the programmer's preferences and the particular application in question, but some general rules always pertain. First, Ruby includes methods that allow the programmer to determine whether a block has been passed to a method or not, and to account for its presence or absence as needed. What makes blocks different from other parameters is that they may be passed to any method, regardless of whether the method declaration includes parameters. Blocks, like methods, may also be given arguments when they are called. Also like methods, variables created within a block are visible only to the block itself, and any variables created outside the block and not supplied as parameters are not visible to the code inside the block\cite{mixandgo}.
+
 \pagebreak
 \nocite{*}
 \bibliographystyle{plain-annote}
