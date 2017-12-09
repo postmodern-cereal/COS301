@@ -1,0 +1,382 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{COS 301 Semester Project: Ruby \\
+    \large Edited}
+\author{Noah Ransom}
+\date{December 9, 2017}
+
+\lstset{
+  language=Ruby,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
+\begin{document}
+\maketitle
+\pagebreak
+\tableofcontents
+
+\pagebreak
+%%%%%%%%%%%%
+\begin{abstract}
+    Ruby is a versatile programming language whose strength lies in its extreme malleability. Despite being highly flexible and featuring dynamic typing, Ruby remains easy to use due to its creator's dedication to the principle of least confusion.
+\end{abstract}
+\section{Overview and History}
+%%%%%%%%%%%%
+\subsection{Overview}
+
+\subsubsection{Early Inspiration}
+Yukihiro Matsumoto was inspired to design Ruby due to his exposure to a 1993 class on scripting languages. His interest in object oriented languages led him to explore both Perl(which lacked the features he was interested) and Python(whose hybrid of object oriented and procedural programming was too lax)\cite{rubyinterview}. Matsumoto then decided to develop his own language that was "more powerful than Perl and more object oriented than Python"\cite{rubyinterview}.
+
+\subsubsection{Design Philosophy}
+Ruby is built upon the philosophy of least surprise: all features of Ruby should align as closely as possible with the expectations and assumptions of the programmer\cite{rubyinterview}. This is not to say that Ruby is a simplistic language; Matsumoto designed Ruby to be capable of both simple and complex tasks. Matsumoto states that Ruby should allow "[the programmer to] enjoy programming and concentrate on the fun and creative part"\cite{rubyinterview}. 
+
+\subsubsection{Influences}
+Matsumoto drew inspiration from some of his favorite languages: Perl, Smalltalk, Lisp, Eiffel, and Ada, and has stated on several occasions that his goal for Ruby is that it be natural, rather than simple, much like human beings\cite{generalRb}. Perhaps the best summarization comes from Matsumoto himself: "I wanted a scripting language that was more powerful than Perl, and more object-oriented than Python"\cite{rubyinterview}. 
+
+\subsubsection{Purpose}
+Ruby is a general purpose language and sees widespread use(notably in the Metasploit Project, which uses Ruby code to conduct penetration testing)\cite{metasploit}\cite{generalRb}.  Matsumoto's intent in creating it was not to achieve a specific purpose, but rather to create a general purpose language that was better than its contemporaries\cite{rubyinterview}. As a general purpose language, it sees wide use in scripting and web development, particularly through the framework Ruby on Rails.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Features}
+
+\subsubsection{Variables}
+%\subsubsection{Typing}
+When declaring a variable in Ruby, it is not necessary to specify a type(it's actually impossible). Instead, the compiler checks whether a method can be performed on a variable when requested, and generates an error if necessary. This functionality is largely due to the fact that everything in Ruby is an object. If some object lacks the method it is asked to employ, it simply generates an error.
+%\subsubsection{Variable Scope}
+Ruby has class, global, instance, and local variables as well as constants\cite{rbvars}. Class variables are shared between all instances of a class. To indicate which type of variable is desired, the variable's name is preceded by a \verb|$| for a global variable, \verb|@| for an instance variable, \verb|@@| for a class variable, a lowercase letter or \verb|_| for a local variable, and an uppercase letter for a constant. Though Ruby eschews specific keywords for each type of variable, it still allows easy program comprehension and enforces a naming convention. Since the preceding character must be used in conjunction with the variable at all times, it is always easy to determine the scope of a variable at a glance.
+
+
+\subsubsection{Objects}
+In Ruby, everything is an object, including segments of code\cite{generalRb}. This means that even primitive types, such as strings and numbers, can be used as objects, rather than just as primitives. The following code provides an excellent example:
+\begin{lstlisting}
+	4.times {print "Hello, World!"}
+\end{lstlisting}
+Ruby's unique object system means that the string "Hello, World!" will be printed four times. Besides being a useful time-saving tool, this provides users with additional control over the program.
+
+Anything in Ruby that is not an object is a message; to call a method on an object, its class is sent a message asking the given function be performed. Because of this system, a programmer is more easily able to control for type mismatching issues. Rather than allowing one's program to crash due to a type incompatibility, one can write additional code to handle objects being asked to perform illegal functions.
+
+\subsubsection{Customization}
+One of Ruby's most useful design features is that the core pieces of the language can be modified or removed at the programmer's discretion. It is possible to modify the built in arithmetic operators, or to add or remove methods from built in classes from within the code of a given program. If, for example, your program involved doubling a large quantity of numbers, you could add a \verb|double| method to Ruby's built-in \verb|Numeric| class like so:
+\begin{lstlisting}
+    class Numeric
+        def double(x)
+            self.*(2)
+        end
+    end
+\end{lstlisting}
+By adding to \verb|Numeric|, rather than creating a separate method, you have given yourself the ability to use your new method on any object in Ruby that inherits \verb|Numeric|.
+
+\subsubsection{Blocks}
+Blocks are one of Ruby's most useful and interesting features, as they allow Ruby to behave similarly to functional languages. A programmer can create a block of code by placing it between a \verb|do| and \verb|end| statement or between curly braces, and then placing it adjacent to a method call. This allows the programmer to use functions as parameters for other functions, and can often save a great deal of space and time.
+Once the block has been passed to a method, the method can execute that block of code with the \verb|yield| keyword:
+\begin {lstlisting}
+	def say_hello
+		puts 'Hi,there!'
+    	yield
+    	end
+	say_hello {puts 'I'm Ruby!"}
+\end{lstlisting}
+The output for this code will be as follows:
+\begin{verbatim}
+    Hi, there!
+    I'm Ruby!
+\end{verbatim}
+The \verb|yield| keyword does not need to be used on its own: the programmer has the option of passing arguments to the block provided, if desired. This allows for much more versatile programming and greater flexibility. By changing only the block of code passed to a method, it is possible to change how the method works without making a totally separate method.
+
+Blocks also have the interesting property that they can be used in a recursive loop. If the user provides a block of code, A, to a method, B, method B can call block A with arguments not directly coded into block A, or provided along with it during the function call. Since the arguments provided to block A by method B can themselves be blocks of code (or even block A itself), it is easy to create a program that is both incredibly flexible and extremely confusing.
+
+As a consequence of this feature, it is possible to use Ruby for some of the same applications generally reserved for functional languages. Though it was not designed specifically to behave in this manner, a programmer could, if they desired, write their code as a series of blocks and methods that are all passed between each other, instead of passing values and variables. As mentioned previously, Ruby's extreme versatility is its greatest asset to the user.
+
+\subsubsection{Inheritance}
+Unlike many more modern languages, Ruby only supports single inheritance\cite{inheritance}. While this seems to be a serious limitation, Ruby provides a convenient way to circumvent it. Consider, for example, three classes: A, B, and C. Suppose that class B has inherited from class A, but needs the method \verb|foo|, which has already been defined in class C. To access this method without reproducing code, the following can be added to class B:
+\begin{lstlisting}
+    def foo()
+        @C.foo
+    end
+\end{lstlisting}
+Composition is, therefore, a powerful tool for the programmer. In instances in which one only wants access to some methods of another class, it is not necessary to inherit the entire class just to access them.
+
+\subsubsection{Modules and Mixins}
+Ruby supports the creation of Modules, which are similar to classes\cite{generalRb}. Since Ruby allows single inheritance only, the programmer is encouraged to collect methods used by a large number of classes into modules than can then be added to each class using \verb|include|. A module can also be used independently from a mixin to supply a class or file with useful data or methods without duplicating them. Consider, for example, a program that solves for the sides and angles of right triangles. When writing the program, the programmer could define $\pi$ and create methods to find trigonometric ratios such as sine and cosine inside the same file as the rest of the program, but this would not be the best approach. A wise programmer would define the constants and methods he needs in a trigonometry module stored in a separate file that can be accessed both by his current program and by any future programs\cite{moduletutorial}.
+\subsubsection{Miscellaneous}
+\begin{itemize}
+    \item {Ruby lacks the unary operators \verb|++| and \verb|--|. Programmers must instead use \verb|+=| or \verb|-=|\cite{rubymisc}.}
+    \item {Multiple variables can be assigned in the same statement, such as in the example below:
+    \begin{lstlisting} 
+    a,b = b,a
+    \end{lstlisting}}
+    \item{Strings can be modified in place without reassignment: 
+    \begin{lstlisting}
+    a = "hello"
+    a[1] = "a"
+    print a     #prints hallo
+    \end{lstlisting}
+    While this feature is not unique to Ruby, it is often extremely useful to the programmer to easily modify a string or array without needing to call a class method or reassign it to the new value.}
+    \item{Ruby supports the use of regular expressions and ranges. Ranges, though not unique to Ruby, can save a great deal of time. An array containing the number from 1 to 5 can be created without ranges by individually listing every number that is to be put into the array(\verb|foo = Array[1, 2, 3, 4, 5]|), or, much more neatly, by using ranges(\verb|foo = (1..5).to_a|)\cite{rangetut}.}
+    
+\end{itemize}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{History}
+
+\subsection{History}
+Ruby's development began in early 1993, when Yukihiro Matsumoto decided to create a scripting language that improved on the functionality of Perl and Python\cite{rubyinterview}. 
+Around this time, Matsumoto and a friend decided to name the language; they selected Ruby as an homage to Perl (both are precious stones with short names)\cite{rubyinterview}. Later, Matsumoto discovered that the pearl is the birthstone of June, and the ruby the birthstone for July. Though the coincidence is accidental, Matsumoto feels that it is appropriate, considering that Ruby was designed to be a successor to Perl.
+
+Matsumoto first released Ruby to Japanese newsgroups in December of 1995(though he released an alpha version of the language a year earlier), and newsgroups were started for the new language soon after\cite{earlyhistmatz}\cite{rubyinterview}. Adoption by English speakers was fairly slow until the 2002 release of \begin{it}Programming Ruby\end{it}, a book by Dave Thomas and Andrew Hunt. This tutorial book brought widespread adoption by English speakers and lead to greater participation in Ruby's newsgroups. At the peak of the newsgroup's popularity in 2006, an average of 200 messages were posted to the newsgroup daily\cite{generalRb}. This popularity was likely due in part to the extreme popularity of the web framework Ruby on Rails, which is built in Ruby. In recent years, the Ruby newsgroup has declined in activity, though the language itself remains extremely popular - it ranked number 10 on the TIOBE index in September 2017\cite{tiobe2017}.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
+
+%%%%%%%%%
+\section{Syntax, Scope, Data Types, and Operators}
+%%%%%%%%%
+
+\subsection{Syntax}
+\subsubsection{Basic Structure}
+Ruby allows the programmer to draw from the ASCII character set to write their programs. Users may use whatever combination of uppercase and lowercase characters they please (with a few minor exceptions), but should be aware that Ruby is case-sensitive. Most constructs, with the notable exception of identifiers, can be separated by an arbitrary amount of comments and whitespace characters (space, vertical tab, tab, form feed, backspace, carriage return). Except when used in a string literal, whitespace is generally ignored. Statements are separated by semicolons and newlines, so particular caution must be used when employing a newline as whitespace\cite{huihoo}.
+
+Identifiers can consist of any combination of alphanumeric characters (uppercase and/or lowercase) and underscores, with no restriction on length. By using certain naming conventions, the programmer can specify the scope and type of a variable. While Ruby does have reserved words, the only restriction on their use is that they may only be used to name functions: \verb|BEGIN = 0| is not allowed, but \verb|def BEGIN...end| is\cite{syntut}\cite{huihoo}.
+
+Like most languages, Ruby allows the programmer to create line comments and block comments. Line comments, preceded by \#, may be used at any position within a line; if the \# follows an expression, the expression will be evaluated, and everything between the \# and the end of the line will be treated as a comment. Block comments work similarly to line comments, with a few minor changes. Firstly, the block comment is contained within an \verb|=begin| and an \verb|=end| statement. All text between the statements, including whitespace, will be ignored (this includes any text sharing the line with the \verb|=begin| statement or the \verb|=end| statement)\cite{syntut}\cite{huihoo}.
+
+\subsubsection{Strings}
+
+String literals and string expressions can be enclosed in either single or double quotation marks. The use of single over double quotations has little effect on the evaluation of the string, except that double-quoted strings can make use of the \verb|\| character to escape a character, while single-quoted expressions cannot (with the exception of \verb|\\| and \verb|\'|). If the string literal will contain a large number of single-quote or double-quote characters, it may be more convenient to use the alternative syntax: \verb|%q/[literal]/| (for single quotes), or either one of \verb|%Q/[literal]/| or \verb|%/[literal]/| (both of which function identically to double quotes). When using the alternative syntax forms, one may elect to use any non-alphanumeric character, including a newline, instead of \verb|/|, with the restriction that the delimiters must match. If one elects to use parentheses or braces as delimiters, the opening delimiter must be the opening character, and the closing delimiter must be the matching closing character\cite{huihoo}.
+
+Ruby's functionality as a scripting language shines through in its ability to treat string literals as command statements. Evaluating a string enclosed by either two grave marks and double quotes (\verb|`"[string]"`|), or \verb|%x{[string]}|\footnote{When using this syntax, the braces may be replaced by any matching pair of delimiters.} will cause the string to be sent to the console as a command. This will return the result of the command's execution. The command will be executed every time the string is evaluated\cite{huihoo}.
+
+\subsubsection{Miscellaneous}
+\begin{enumerate}
+    \item{A string delimited by forward slashes will be treated as a regular expression}
+    \item{An expression within a string can be evaluated before the string itself by preceding it with a \verb|#| and delimiting it with braces. This will display returns of function calls and the values of variables without first storing them in their own string.}
+\end{enumerate}
+
+
+\subsection{Scope}
+In Ruby, there are four different possible scopes for a variable, each of which corresponds to its own naming convention. Global variables, which are visible to the entirety of the script, are preceded by a \verb|$|; class variables, which are available to their class and its subclasses, are preceded by \verb|@@|; instance variables, which are available only to the specific object, are preceded by \verb|@|; local variables, preceded by a lowercase letter or an underscore, are more complex. The scope of a local variable is determined solely by the scope in which it is assigned to a value\cite{darko}.
+
+At first glance, the distinction between a class variable and an instance variable seems small. Both are, after all, visible to the class in which they exist, and both can be used by any of the methods within the class. The distinction between them is in how they may be changed. Consider, for example, a class Animal that contains the class variable \verb|@@num_legs|, which is set to four. If one were to create a class for humans, one would want to set \verb|@@num_legs| to two, as humans only have two legs. Because the Animal class uses a class variable for the number of legs, though, changing the value of \verb|@@num_legs| for the Human class will also change the value for the Animal class\cite{darko}.
+
+Ruby controls the current scope by using scope gates. The code defining a module, method, or class, is considered its own scope, and thus has access only to variables created in that scope, or otherwise made available to it. Though a method of a class will still have access to the class variables, instance variables, and global variables, it will lose access to any local variables created in the class. Similarly, the class itself will not have access to the local variables created in its methods. To circumvent the scope gates, the programmer may use method calls in place of the standard declarations. Doing so will preserve access to local variables that would otherwise be blocked by scope gates. By default, a block does not serve as a scope gate. A local variable that is in scope where the block is written will be accessible to the block, but local variables created inside of the block will not be available outside of the block\cite{darko}. 
+
+
+\subsection{Data Types}
+Since Ruby was designed to be a fully object-oriented language, it has no primitive data types whatsoever. Everything in Ruby is an object, including literals. Since Ruby has no true primitives, I will instead discuss its basic data types: Strings, Numbers, Booleans, and Arrays.
+
+Ruby's Numeric class serves as the basis for all of the number-based classes in Ruby. Its subclasses are Integer, Float, Rational, and Complex. Collectively, these describe all possible numbers. Integer, in turn, has the subclasses FixNum(for integers ranging from $-2^{62}$ to $2^{62} - 1$) and BigNum (for integers greater than $2^{62}-1$ or smaller than $-2^{62}$). Float is used to describe all floating point numbers, that is, non-integers with no imaginary component, and Complex is used to store complex numbers. The Rational class is used to store rational numbers as a pair of integers (a numerator and a denominator). This allows the programmer to avoid rounding errors that would usually occur due to the use of floating point numbers, as the number is only evaluated when it is cast to a different type. Float, Rational, and Complex are all unlimited in the size of the numbers they may represent\cite{rubydocs}.
+
+Strings in Ruby behave largely as expected, and can be created either from literals, or as a series of bytes. A string may have any size in theory, though in practice, the maximum length of a string is dictated by the amount of memory available to the program.
+
+Though Ruby does have classes specifically for true and false, respectively TrueClass and FalseClass, only one instance exists of each: the global value true and the global value false. Instead of having a class for booleans, Ruby evaluates expressions, and then returns the instance of the correct boolean class based on the value of the statement. Since everything in Ruby can be interpreted as a boolean, there is no need for a specific boolean type\cite{forumbool}.
+
+In Ruby, an array is an "ordered, integer-indexed [collection] of any object"\cite{docsarray}. Array indices start at 0, and negative indices indicate indexing relative to the end of the array (an index of -1 indicates the final element in the array). Somewhat atypically, Ruby's arrays dynamically increase in size as necessary\cite{docsarray}.
+
+
+
+\subsection{Operators}
+Because Ruby lacks primitive data types, its operators do not act directly on the variables or expressions upon which they are used. Instead, an operator works as a function call in which the operator is a method for one of the objects, and the other object is treated as an argument to that method. For example, \verb|a + b| is treated as \verb|a.+(b)|. This distinction, though significant at a technical level, has little effect on the programmer on a routine basis, other than that it allows for easy overloading and modification of the basic operators. It must also be noted that Ruby requires that all operands for an operator be of a compatible type\cite{opstut}.
+
+Ruby's number classes all support the standard arithmetic operators that one would expect from most modern languages: addition, subtraction, division, multiplication, modulus, and exponentiation. Ruby uses infix notation to represent operations, and the return value of the operation is based on the highest-precision class involved in the operation. If an integer is subtracted from a float, for example, the result will always be of type float, no matter the value of the result. Arithmetic operators work from left to right: \verb|a / b| returns the quotient of a divided by b, \verb|a % b| returns the remainder of a divided by b, and so on\cite{opstut}.
+
+In addition to the typical operators for testing equality, greater than, less than, less than or equal to, etc, Ruby includes a few comparison operators not typically found in other languages, such as the combined comparison operator (\verb|<=>|). This operator compares two comparable values and returns a value based on their equality relationship. The expression \verb|a <=> b| will return 1 if \verb|a > b|, 0 if \verb|a == b|, and -1 if \verb|a < b|. Ruby's \verb|==| operator returns true when two objects share the same value, which is sufficient in most cases, but due to the fact that everything in the language is an object, it is necessary to include operators that compare the classes of each operand. To this end, one may use \verb|.eql?| or \verb|.equal?|. The former will return true if both operands hold the same value and are of the same type, and the latter will return true if and only if both operands have the same object id. As a clarifying example, \verb|3 == 3.0| will return true, because 3 and 3.0 have the same value, but \verb|3.eql?(3.0)| will return false, because 3 is a FixNum, and 3.0 is a Float. More esoterically, Ruby features a \verb|===| operator to test equality in case statements. The operator returns a boolean value based on the answer to the question "If \verb|a| described a set, would \verb|b| be a member of that set?"\cite{opstut}\cite{mittag}
+
+Ruby's assignment operators are the same as those found in most languages: a single \verb|=| for direct assignment, \verb|+=| for addition and assignment, and so on. All of the arithmetic operators can be used in conjunction with an equals sign to perform assignment based on the result of the operation. Parallel assignment can be used to assign multiple values at once (\verb|foo, bar, bas = 10, 34, 14|), or to easily swap the values of two or more variables (\verb|foo, bar = bar, foo|)\cite{opstut}.
+
+As in other languages, Ruby features bitwise (bitwise and, or, XOR, one's compliment, left shift, and right shift) and logical operations. Ruby's logical operators are \verb|and|, \verb|or|, and \verb|not|, which can be used as words (\verb|a and b|), or as their traditional operational symbols (\verb|a && b|) with no effect to the truth value returned by the statement. As with the logical and bitwise operations, Ruby's ternary uses the same syntax as most other languages\cite{opstut}.
+
+\subsubsection{Operator Precedence and Associativity}
+The following table describes Ruby's operators, their associativity, and their precedence. Note that higher-precedence operations are listed higher up in the list, and lower precedence operators listed lower\cite{opstut}\cite{opsassociativity}.
+\begin{center}
+    \begin{tabular}{|c | c | l|}
+        \hline
+        Operator & Associativity & Description \\ \hline
+        \verb|! ~| & Right & boolean not, bitwise compliment \\ \hline
+        \verb|**| & Right & exponentiation \\ \hline
+        \verb|* / %| & Left & multiplication, division, and modulus \\ \hline
+        \verb|- +| & Left & subtraction, addition/concatentation \\ \hline
+        \verb|>> <<| & Left & bitwise right shift and left shift(or append) \\ \hline
+        \verb|&| & Left & bitwise and \\ \hline
+        \verb=^ |= & Left & bitwise XOR, bitwise or \\ \hline
+        \verb|> >= <= <| & Left & comparison \\ \hline
+        \verb|== === != <=> =~ !~| & Non-associative & equality and pattern matching \\ \hline
+        \verb|&&| & Left & boolean and \\ \hline
+        \verb=||= & Left & boolean or \\ \hline
+        \verb|... ..| & Non-associative & range creation (exclusive and inclusive) \\ \hline
+        \verb|? :| & Right & ternary if-then-else \\ \hline
+        \verb|= += %= **=| etc & Right & assignment \\ \hline
+        \verb|defined?| & Non-associative & check if the symbol is defined \\ \hline
+        \verb|not| & Right & logical negation \\ \hline
+        \verb|and or| & Left & logical composition \\ \hline
+        
+        
+        
+        \hline
+        
+        
+    \end{tabular}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+%%%%%%%%
+\section{Data Types, Expressions, and Assignment}
+%%%%%%%%
+
+\subsection{Data Types}
+Technically, all data in Ruby comes in the form of objects. From integers to hashes, the language represents the information indirectly as an object, rather than directly as a piece of memory. As a consequence, Ruby does not have primitive data types, which eliminates any real distinction between primitive and non primitive types. For this reason, this section considers those types typically included in other languages, but not considered primitive types: strings, symbols, arrays, hashes, classes, and structs.
+
+Ruby's strings behave similarly to those in most languages. A string object "holds and manipulates an arbitrary sequence of bytes, typically representing characters" \cite{docs_string}. As with all types in Ruby, strings are objects, and so its is hardly surprising that Ruby's strings are mutable by default. As with all things in Ruby this behavior can be modified, and strings can be forced to be immutable by using the \verb|freeze| method.
+
+Like many languages, Ruby provides the programmer with a \verb|symbol| type. A symbol is one of the most simple types in Ruby, as it consists only of "a name and an internal ID"\cite{learning_symbols}. In a given program, every object, class, method, and operator will have a symbol associated with it automatically. To access the symbol for a name, one need only prefix the name with a colon (to access the symbol for variable \verb|foo|, one would type \verb|:foo|). Before proceeding, it is crucial to clarify that every name in a program has one and only one associated symbol. Ruby expert Fabio Akita provides an excellent explanation on his page about symbols: "if Fred [refers to] a constant in one context, a method in another, and a class in a third, the Symbol \verb|:Fred| will be the same object in all three contexts"\cite{learning_symbols}.
+
+Ruby's arrays and hashes function very similarly to those found in many other languages. Arrays are mutable and resizable, and can be made to hold objects of various types\cite{learning_arrays}. Like in Python, accessing an array with a negative index will return elements relative to their distance from the end of the array. Somewhat non traditionally, when a programmer attempts to access an index beyond the bounds of the array, Ruby returns \verb|nil| rather than throwing an exception. Relatedly, hashes function nearly identically to Python's libraries\cite{docs_hashes}.
+
+Since everything in Ruby is an object, it is not surprising that Ruby allows the programmer to create custom classes with methods, inheritance, accessors, and modules. What is surprising is that it also allows for the creation of Struct objects. Like those found in C, these hold sets of variables and values. Perhaps the best summation of the distinction between classes and structs comes from the Ruby documentation: "A Struct is a convenient way to bundle a number of attributes together, using accessor methods, without having to write an explicit class"\cite{docs_struct}.
+
+\subsection{Libraries Extending the Type System}
+Since everything in Ruby is an object, Ruby's type system is largely obscured from the user. To be certain, Ruby does have ways to ensure that "types" are used correctly, though this is done through duck typing. Before using a method on an object, Ruby ensures that the object will allow that method to be used on it safely. As a consequence, Ruby's typing is extremely flexible. To change how it works, all one need do is change how their classes are written.
+
+\subsection{Expression Evaluation: Semantics}
+When discussing Ruby's expression semantics, it is important to be cognizant of the fact that many of its operators are simply syntactic convenience, and are implemented as method calls\cite{opstut}. For the most part, this has little effect on the way expressions are evaluated. The operators are used with in-fix notation, and are evaluated from left to right according to a fairly standard order of operations.
+
+What makes expressions unique in Ruby is the flexibility of the underlying language. Because it is easy to override Ruby's default operators, the programmer has the freedom to customize how expressions are evaluated\cite{generalRb}. To clarify, this freedom mostly pertains to easy ability to change the results of, for example, the addition operator. The operators can be overloaded and modified on a class by class basis, but they will still be evaluated in the same order. Since basic operators can be defined and overridden for every class, one need not create a custom system for expression evaluation from the ground up.
+
+\subsection{Coercions and Type Conversions in Expression Evaluation}
+Since Ruby's types are highly obscured from the programmer, it often makes little sense to consider type conversion. On occasion, an object may have its data copied to a different object prior to or as a result of the evaluation of an expression, but in most cases, the programmer is encouraged to overload operators in order to avoid this necessity.
+
+All the same, there are certain situations in which a type conversion is inevitable. For example, when evaluating an expression involving members of the Numeric class, Ruby will return a member of the class best suited to the result. If the product of two Integers is larger than the maximum size for an integer, the result will be a member of the Bignum class\cite{docs_integer}. In similar vein, Ruby performs the standard type conversions between numeric types as necessary (the result of an Integer division will always be an Integer, but dividing an Integer by a Float will return a Float).
+
+\subsection{Assignment Semantics}
+Ruby performs assignments using type inferencing, which means that the type is inferred based on the value it is assigned. In addition to using type inferencing, Ruby is dynamically typed. This means that a non-constant variable can be reassigned to any value at any time. Writing \verb|foo = "hello"| will create a variable name \verb|foo| that refers to a String that contains \verb|hello|, and writing \verb|bar = 5.25| binds the name \verb|bar| to an instance of Float with a value of \verb|5.25|. Since Ruby is dynamically typed, though, it would be acceptable to write \verb|foo = 5| on the next line.
+
+For classes that cannot be directly assigned as literals, assignment syntax is slightly different. Consider a simple class \verb|Rectangle|, which has a constructor that accepts length and width as parameters. To create a Rectangle variable, one would write the following code: \verb|big_square = Rectangle.new(50, 50)|. Once the first object has been constructed, other variables can be made to point to the same object: \verb|copy_of_big_square = big_square|\cite{learning_classes}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+%%%%%%%%
+\section{Control Constructs and Subprograms}
+%%%%%%%%
+\subsection{Control Constructs}
+\subsubsection{Conditionals}
+Ruby provides all of the traditional control statements familiar to modern programmers: if/else/else if statements, ternary operators, and case statements. The syntax associated with each of these should be familiar to those familiar with modern languages. For example, if statements are structured like so:
+\begin{lstlisting}
+    if <condition>
+        <code>
+    elsif <condition>
+        <code>
+    else
+        <code>
+    end
+\end{lstlisting}
+Alternately, this can be condensed to fit in one line by following the conditional with the \verb|then| keyword, and enclosing the code block in curly braces\cite{flow_control}. The case statement should be equally familiar: it begins with the keyword \verb|case|, and ends with the \verb|end| keyword. For greater code readability, it is good practice to include the variable after the \verb|case| keyword. The complete syntax is best illustrated though an example:
+\begin{lstlisting}
+    a = 5
+    
+    case a
+        when a % 2 == 0
+            puts "a is even"
+        when a % 2 == 1
+            puts "a is odd"
+        else                                #the else keyword serves the same function as the default keyword in C++
+            puts "a is neither even nor odd"
+    end
+    #this code will display "a is odd" when evaluated
+\end{lstlisting}
+In addition to these familiar conditional statements, Ruby provides an \verb|unless| statement. It works almost identically to a negated if statement: the accompanying code block is only executed if the conditional evaluates to false\cite{ctrl_struct}. Also like with if statements, it is possible to use an \verb|unless| statement in-line: \verb|<code> unless <conditional>| Unlike an if statement, the \verb|unless| statement does not allow for an else or an \verb|else if| statement\cite{ctrl_struct}. 
+\subsubsection{Loops}
+As with conditional statements, Ruby features a number of loop constructs that will be familiar to most programmers: while loops, for loops, and for each loops. The syntax for each of these constructs should also be familiar. A while statement, for example, is structured as follows:
+\begin{lstlisting}
+    while <condition> do
+        <code>
+    end
+\end{lstlisting}
+Note here that the \verb|do| keyword on the first line is optional, and may be used with any loop construct\cite{ctrl_struct}. 
+Like the \verb|unless| and \verb|if| constructs, \verb|while| may be used in-line by preceding the \verb|while| keyword with the code block, and proceeding it with the conditional. In some cases, it code readability may be improved by using the \verb|until| keyword. It functions almost identically to the \verb|while| keyword, except that it evaluates its code block until the conditional no longer evaluates to false\cite{ctrl_struct}.
+Just as with the \verb|while| construct, Ruby's \verb|for| syntax is nearly identical to the syntax of other modern languages such as Java or C++, except that it uses ranges to dictate the bounds of iteration. Similarly, Ruby provides a for each syntax that allows iteration over all of the elements in a collection\cite{flow_control}.
+These loop constructs can be used in conjunction with the \verb|break|,\verb|next|,\verb|return|, and \verb|redo| keywords. The first two keywords should be familiar to programmers who have worked with Java or C++. The \verb|break| keyword is used to exit a loop, the \verb|next| keyword terminates the current iteration and returns to the conditional, and the \verb|return| keyword returns the value specified. The \verb|redo| command is similar to the \verb|next| keyword, in that it stops evaluation of the code block when it is called, but unique in that it returns to the top of the code block and begins evaluation without checking the conditional\cite{flow_control}.
+
+\subsection{Subprograms}
+Ruby's subprograms, or methods, offer a great deal of functionality to the programmer. They are created by using the \verb|def| keyword, and completed using the \verb|end| keyword. Methods employ the scope gating behavior discussed earlier in the paper: local variables created outside the method are not available to the code in the method, and local variables created in the method are not visible to other code in the program\cite{calvin_labs}. Interestingly, Ruby's naming system allows the possibility of name conflicts with method and variable names. It is perfectly legal to write the following code:
+\begin{lstlisting}
+    def foo()  
+        puts "Hello"
+    end
+    
+    p foo                   #Hello 
+    foo = "Goodbye"
+    p foo                   #Goodbye
+\end{lstlisting}
+In this case, the function \verb|foo| is still available to the programmer. To access the function, it is necessary to use parentheses to indicated that one is referring to the function, rather than the variable. In the example above, evaluating \verb|p foo()| will print \verb|Hello| to the console\cite{darko}.
+
+When a method is declared, the programmer may specify any number of parameters. These come in three forms: required arguments, default arguments, and optional arguments. These can be illustrated by using an example:
+\begin{lstlisting}
+    def add_some_numbers(a, b, c=3, *d)
+        sum = a + b + c
+        d.each do |num|
+            sum += num
+        end
+    end
+\end{lstlisting}
+Here, \verb|a| and \verb|b| are the required arguments. Whenever a call is made to \verb|add_some_numbers|, the programmer must include a minimum of two numbers. The parameter \verb|c| is a default parameter. If the programmer does not specify a third value, the method will use the defult value of 3. The final parameter, \verb|d| is an array that is used to contain the optional arguments. If no additional arguments are supplied in the call, it will remain empty\cite{skorkin}.
+When parameters are given to a method, Ruby satisfies the required arguments first, and the optional and default values second. Alan Skorkin provides an illustrative example of this process on his website \url{www.skorks.com}, which I shall paraphrase here. Suppose there is a method with a parameter list \verb|(a, b, *p, q)|. Values will be assigned to these parameters based on the number of arguments supplied. If the method is called with the argument list \verb|(25, 35, 45, 55)|, the parameters of the method will be assigned such that \verb|a = 25|, \verb|b = 35|, \verb|*p = [45]| and \verb|q = 55|\cite{skorkin}. If the programmer passed only the first three values, the optional array would be left empty, and the \verb|q| parameter would be assigned a value of 45. When a method contains both default arguments and optional arguments, Ruby will assign values first to required parameters, then to default values, and finally to the optional array. This concept is simple in theory, but in practice, it can become confusing\cite{skorkin}.
+As Ruby has no formal type system, a method call can contain arguments of any type, including blocks of code(the latter of which will be covered in greater depth in section \ref{blocks}).
+
+Perhaps unsurprisingly, Ruby does allow the programmer to create recursive programs. The caveat is that Ruby does not allow tail call optimization by default. For this reason, recursive programming is generally a risky proposition, as it can quickly deplete available memory for large applications. When it is essential to use recursive programming, the programmer may enable tail call optimization by enabling the relevant compiler option\cite{bekal}.
+
+\subsection{Blocks}\label{blocks}
+Ruby's blocks allow the programmer to pass code as an argument to a method. Strictly speaking, this is not the same as passing a method as an argument to another method, but in practice, it can allow the same functionality\cite{mixandgo}. As mentioned previously, a block is a self contained segment of code. They can accept parameters, or work independently.
+To summarize a very deep topic, blocks can be passed to methods in much the same way as other arguments: they can be required, optional, or defaulted. Controlling this behavior is largely dependent on the programmer's preferences and the particular application in question, but some general rules always pertain. First, Ruby includes methods that allow the programmer to determine whether a block has been passed to a method or not, and to account for its presence or absence as needed. What makes blocks different from other parameters is that they may be passed to any method, regardless of whether the method declaration includes parameters. Blocks, like methods, may also be given arguments when they are called. Also like methods, variables created within a block are visible only to the block itself, and any variables created outside the block and not supplied as parameters are not visible to the code inside the block\cite{mixandgo}.
+
+
+
+\pagebreak
+\nocite{*}
+\bibliographystyle{plain-annote}
+\bibliography{part6}{}
+
+\end{document}
